@@ -198,6 +198,7 @@ html[data-theme="light"] .polaroid{background:#fbf9f2}
 
 /* ============ СТРАНИЦА ДЕЛА ============ */
 .game-doc{max-width:960px;margin:0 auto;padding-top:44px}
+.game-doc .hero-text{margin-bottom:28px}
 .back{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);text-decoration:none;margin-bottom:26px}
 .doc-head{display:flex;gap:14px;align-items:center;margin-bottom:10px}
 .doc-title{font-family:var(--disp);font-weight:700;text-transform:uppercase;font-size:clamp(34px,5vw,60px);margin:6px 0 4px}
@@ -388,3 +389,39 @@ body.no-scroll{overflow:hidden}
     .nav{display:none}
     .burger{display:flex}
 }
+
+/* ============ ВОЗРАСТ И ПРЕДУПРЕЖДЕНИЯ ============ */
+.age{color:var(--muted);border:1px solid var(--line);padding:1px 6px;font-size:10px;letter-spacing:.08em}
+.tag-warn{border:1px dashed var(--red);color:var(--red)}
+.cw-note{border:1px dashed var(--red);border-left:3px solid var(--red);background:var(--panel);padding:14px 18px;margin:18px 0}
+.cw-label{display:block;font-family:var(--mono);font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--red);margin-bottom:6px}
+.cw-note p{color:var(--ink);font-size:14.5px;line-height:1.7}
+.cw-note small{display:block;margin-top:8px;color:var(--muted);font-size:12.5px}
+.age-note{display:block;margin-top:8px;padding-top:8px;border-top:1px dashed var(--line);
+    font-size:12.5px;line-height:1.6;color:var(--muted)}
+
+/* ============ ЛИНИИ / ВУАЛИ / ФОКУС ============ */
+.safety-block{border:1px dashed var(--line);background:var(--panel);padding:16px 18px;margin:18px 0}
+.safety-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-top:12px}
+.safety-col{border-left:3px solid;padding-left:12px}
+.safety-col h4{font-family:var(--mono);font-size:12px;letter-spacing:.22em;text-transform:uppercase;margin-bottom:4px}
+.safety-col small{display:block;color:var(--muted);font-size:12px;line-height:1.5;margin-bottom:8px}
+.safety-col ul{list-style:none}
+.safety-col li{font-size:14px;line-height:1.65;color:var(--ink);padding:2px 0}
+.safety-col li::before{content:"— ";color:var(--muted)}
+.safety-col.veils{border-color:var(--muted)} .safety-col.veils h4{color:var(--muted)}
+.safety-col.focus{border-color:var(--teal)}  .safety-col.focus h4{color:var(--teal)}
+.safety-note{display:block;margin-top:14px;color:var(--muted);font-size:12.5px;line-height:1.6}
+.safety-add{display:block;margin-top:12px;color:var(--ink);font-size:13px;line-height:1.6;font-style:italic}
+
+/* ============ ОТЗЫВЫ НА СТРАНИЦЕ ДЕЛА ============ */
+.doc-reviews{margin-top:36px}
+.doc-reviews-title{font-family:var(--mono);font-size:13px;letter-spacing:.24em;text-transform:uppercase;color:var(--teal);margin-bottom:18px}
+.doc-reviews-more{display:inline-block;margin-top:18px}
+
+.backstory-note{border:1px solid var(--line);border-left:3px solid var(--teal);background:var(--panel);
+    padding:14px 18px;margin:18px 0}
+.bn-label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
+    color:var(--teal);margin-bottom:6px}
+.backstory-note p{color:var(--ink);font-size:14.5px;line-height:1.7}
+.backstory-note strong{color:var(--teal)}

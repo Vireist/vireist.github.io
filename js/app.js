@@ -42,9 +42,19 @@ function parseFrontmatter(src){
     return {meta, body:m[2]};
 }
 
+/* ============ ОТЗЫВЫ: РЕЗОЛВ ИГРЫ ============ */
+function resolveReviewGame(meta){
+    const raw=String(meta.game||'').trim();
+    if(!raw) return null;
+    const g=state.games.find(x=>String(x.meta.id)===raw);
+    return g ? {linked:true, id:String(g.meta.id), title:g.meta.title}
+        : {linked:false, id:null, title:raw};
+}
+const reviewGameLabel = res => res ? (res.linked ? '«'+res.title+'»' : res.title) : '';
+
 const state = { config:{}, games:[], reviews:[], contacts:[], about:'',
     filters:{q:'', system:'', format:'', setting:'', tags:[], price:''},
-    revShown: 6, revPageSize: 6 };
+    revShown: 6, revPageSize: 6, backstory:{} };
 
 /* ============ СТАРТ ============ */
 (async function boot(){
@@ -56,13 +66,14 @@ const state = { config:{}, games:[], reviews:[], contacts:[], about:'',
         const manifest = await getJSON('data/manifest.json');
         state.contacts = await getJSON('data/contacts.json');
         const loadDoc = f => getText(f).then(parseFrontmatter).catch(e=>{ console.warn('Не читается:', f, e); return null; });
-        const [games, reviews, about, table, recruits, faq] = await Promise.all([
+        const [games, reviews, about, table, recruits, faq, backstory] = await Promise.all([
             Promise.all(manifest.games.map(loadDoc)),
             Promise.all(manifest.reviews.map(loadDoc)),
             getText(state.config.aboutFile || 'data/about.md').catch(()=> ''),
             getJSON(state.config.tableFile || 'data/table.json').catch(()=> []),
             getJSON(state.config.recruitsFile || 'data/recruits.json').catch(()=> []),
-            getJSON(state.config.faqFile || 'data/faq.json').catch(()=> [])
+            getJSON(state.config.faqFile || 'data/faq.json').catch(()=> []),
+            getJSON(state.config.backstoryFile || 'data/backstory.json').catch(()=> ({}))
         ]);
         state.recruits = recruits;
         state.games   = games.filter(Boolean).sort((a,b)=>String(a.meta.id).localeCompare(String(b.meta.id)));
@@ -70,6 +81,7 @@ const state = { config:{}, games:[], reviews:[], contacts:[], about:'',
         state.about   = about;
         state.table   = table;
         state.faq = faq;
+        state.backstory = backstory;
         buildStatic(); buildFilters(); initFiltersDrawer();
         renderCatalog(); renderReviews(); renderContacts(); renderRecruits(); renderTable(); renderFaq();
         $('#catalog').addEventListener('click', e=>{
@@ -163,6 +175,7 @@ function buildStatic(){
         bl.hidden=false;
         bl.innerHTML=`${esc(br.text||'Нашли баг на сайте — напишите:')} <a href="${esc(br.url)}" target="_blank" rel="noopener">${esc(br.handle||br.url)}</a>`;
     } else bl.hidden=true;
+    const al=$('#age-line'); al.textContent = c.siteAge ? 'Возрастная маркировка материалов сайта: ' + c.siteAge : ''; al.hidden = !c.siteAge;
 }
 
 /* ============ ФИЛЬТРЫ ============ */
@@ -213,7 +226,7 @@ function renderTagChips(){
     let shown=values, hidden=0;
     if(!el._expanded && values.length>limit){
         const head=values.slice(0,limit);
-        const extra=values.slice(limit).filter(v=>active.includes(v.toLowerCase())); // выбранные не прячем
+        const extra=values.slice(limit).filter(v=>active.includes(v.toLowerCase()));
         shown=head.concat(extra);
         hidden=values.length-shown.length;
     }
@@ -270,8 +283,8 @@ function caseCard(g){
     <div class="case-body">
       <h3>${esc(m.title)}</h3>
       <p>${esc(m.teaser||'')}</p>
-            <div class="meta"><span class="sys">${esc(m.system)}</span> · ${esc(m.format)} · ${esc(m.players)} · ${esc(m.duration)}${m.geo ? ' · <span class="geo">'+esc(m.geo)+'</span>' : ''}</div>
-            <div class="tags">${m.setting ? `<span class="tag tag-setting">${esc(m.setting)}</span>` : ''}${(m.tags||[]).filter(t=>t.toLowerCase()!==String(m.setting||'').toLowerCase()).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
+        <div class="meta"><span class="sys">${esc(m.system)}</span> · ${esc(m.format)} · ${esc(m.players)} · ${esc(m.duration)}${m.geo ? ' · <span class="geo">'+esc(m.geo)+'</span>' : ''}${(m.age||state.config.ageDefault) ? ' · <span class="age">'+esc(m.age||state.config.ageDefault)+'</span>' : ''}</div>
+        <div class="tags">${m.setting ? `<span class="tag tag-setting">${esc(m.setting)}</span>` : ''}${(m.veils||m.focus) ? `<span class="tag tag-warn" title="фокус и вуали — карта контента">CW</span>` : ''}${(m.tags||[]).filter(t=>t.toLowerCase()!==String(m.setting||'').toLowerCase()).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>
     </div></article>`;
 }
 function renderCatalog(){
@@ -306,7 +319,6 @@ function renderTable(){
 }
 
 /* ============ FAQ ============ */
-/* ============ FAQ ============ */
 function renderFaq(){
     const items = state.faq || [];
     $('#faq').hidden = !items.length;
@@ -336,7 +348,7 @@ function renderRecruits(){
     $('#recruits').hidden = !items.length;
     $('#recruits-list').innerHTML = items.map(contactCardHtml).join('');
 }
-/* ============ ОТЗЫВЫ / КОНТАКТЫ ============ */
+/* ============ ОТЗЫВЫ ============ */
 function renderReviews(){
     const reviews = state.reviews || [];
     const total = reviews.length;
@@ -349,12 +361,11 @@ function renderReviews(){
           ${mdToHtml(r.body)}
           ${r.meta.reply ? `<div class="rev-reply"><span class="rev-reply-label">/// ${esc(r.meta.replyLabel||'ответ мастера')}</span><p>${esc(r.meta.reply)}</p></div>` : ''}
           <figcaption><span class="rev-name">${esc(r.meta.name||'Аноним')}</span>
-          <span class="rev-game">${esc(r.meta.game||'')}</span></figcaption>
+          <span class="rev-game">${esc(reviewGameLabel(resolveReviewGame(r.meta)))}</span></figcaption>
         </figure>`).join('');
 
     $('#reviews-count').textContent = total ? `показано ${shown} из ${total}` : '';
 
-    // Анимация появления только что пришедших карточек
     $$('#reviews-list .rev-card').forEach((el,i)=>{
         if(i >= shown - Math.min(6, Math.max(state.revPageSize, 1))){
             el.classList.add('rev-enter');
@@ -378,7 +389,8 @@ function renderReviews(){
     const fold = $('#rev-fold');
     if(more) more.onclick = ()=>{ state.revShown = Math.min(total, state.revShown + state.revPageSize); renderReviews(); };
     if(btnAll) btnAll.onclick = ()=>{ state.revShown = total; renderReviews(); };
-    if(fold) fold.onclick = ()=>{ state.revShown = state.revPageSize; renderReviews(); window.scrollTo({top: document.getElementById('reviews').offsetTop - 60, behavior:'smooth'}); };}
+    if(fold) fold.onclick = ()=>{ state.revShown = state.revPageSize; renderReviews(); window.scrollTo({top: document.getElementById('reviews').offsetTop - 60, behavior:'smooth'}); };
+}
 const ICONS = {
     telegram:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4 20-7z"/></svg>',
     mail:'<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="1"/><path d="m2 7 10 7L22 7"/></svg>',
@@ -398,12 +410,20 @@ function renderGame(id){
         return;
     }
     const m=g.meta, paid=(m.price||'').toLowerCase()==='платно';
+    const relAll=(state.reviews||[]).filter(r=>{
+        const res=resolveReviewGame(r.meta);
+        return res && res.linked && res.id===String(m.id);
+    });
+    const relLimit=Number(state.config.gameReviewsLimit)||3;
+    const rel=relAll.slice(0,relLimit);
+    const relMore=relAll.length-rel.length;
     view.innerHTML = `<div class="container game-doc">
     <a class="back" href="#/" data-section="games">← В картотеку</a>
     <div class="doc-head"><span class="case-num">Дело № ${esc(m.id)}</span>
       <span class="price ${paid?'paid':'free'}">${esc(m.price||'')}</span></div>
     <h2 class="doc-title">${esc(m.title)}</h2>
     <p class="hero-text">${esc(m.teaser||'')}</p>
+    ${coverHtml(m,'doc-cover')}
     <dl class="doc-meta">
       <div class="meta-half"><dt>Система</dt><dd class="t">${esc(m.system)}</dd></div>
       <div class="meta-half"><dt>Вселенная</dt><dd class="t">${esc(m.setting||'—')}</dd></div>
@@ -411,10 +431,34 @@ function renderGame(id){
       <div><dt>Игроки</dt><dd>${esc(m.players)}</dd></div>
       <div><dt>Длительность</dt><dd>${esc(m.duration)}</dd></div>
       <div><dt>Стоимость</dt><dd>${esc(m.price)}</dd></div>
+      <div class="meta-full"><dt>Возрастная маркировка</dt><dd>${esc(m.age||state.config.ageDefault||'—')}</dd>${state.config.ageNote ? `<small class="age-note">${esc(state.config.ageNote)}</small>` : ''}</div>
       ${m.geo ? `<div class="meta-full"><dt>География</dt><dd class="t">${esc(m.geo)}</dd></div>` : ''}
     </dl>
-    ${coverHtml(m,'doc-cover')}
+    ${m.backstory && state.backstory[m.backstory] ? `<div class="backstory-note">
+      <span class="bn-label">/// подготовка персонажа</span>
+      <p><strong>Предыстория:</strong> ${esc(state.backstory[m.backstory].label||'')} — ${esc(state.backstory[m.backstory].description||'')}</p>
+    </div>` : ''}
     <div class="doc-body">${mdToHtml(g.body)}</div>
+    ${(state.config.safetyApproach||m.veils||m.focus||m.safetyNote) ? `<div class="safety-block"><span class="cw-label">/// фокус и вуали</span>
+      ${state.config.safetyApproach ? `<p class="safety-approach">${esc(state.config.safetyApproach)}</p>` : ''}
+      <div class="safety-grid">
+        ${(m.focus||[]).length ? `<div class="safety-col focus"><h4>Фокус</h4><small>база игры — может всплыть подробно</small><ul>${m.focus.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+        ${(m.veils||[]).length ? `<div class="safety-col veils"><h4>Вуали</h4><small>вряд ли всплывёт, либо вскользь</small><ul>${m.veils.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>` : ''}
+      </div>
+      ${m.safetyNote ? `<small class="safety-add">${esc(m.safetyNote)}</small>` : ''}
+      <small class="safety-note">Это карта игры, а не контракт. Если что-то чувствительно для вас — напишите до игры, обсудим. Механика «стоп» (X-card) работает в любом случае.</small></div>` : ''}
+    ${rel.length ? `<div class="doc-reviews"><h3 class="doc-reviews-title">/// показания по делу</h3>
+      <div class="rev-grid">${rel.map((r,i)=>`
+        <figure class="rev-card" style="--rot:${i%2 ? '1.3deg' : '-1.6deg'}">
+          ${r.meta.reply ? `<span class="rev-flag">ответ мастера</span>` : ''}
+          ${mdToHtml(r.body)}
+          ${r.meta.reply ? `<div class="rev-reply"><span class="rev-reply-label">/// ${esc(r.meta.replyLabel||'ответ мастера')}</span><p>${esc(r.meta.reply)}</p></div>` : ''}
+          <figcaption><span class="rev-name">${esc(r.meta.name||'Аноним')}</span>
+          <span class="rev-game">${esc(reviewGameLabel(resolveReviewGame(r.meta)))}</span></figcaption>
+        </figure>`).join('')}
+      </div>
+      ${relMore>0 ? `<a class="btn ghost doc-reviews-more" href="#/" data-section="reviews">Ещё ${relMore} показаний — в общем архиве</a>` : ''}
+    </div>` : ''}
     <div class="doc-actions">
       <a class="btn" href="#/" data-section="contacts">Записаться на игру</a>
       <a class="btn ghost" href="#/" data-section="games">Все дела</a>
@@ -444,15 +488,14 @@ document.addEventListener('click', e=>{
     const logo = $('.logo');
     logo.addEventListener('click', e=>{
         e.preventDefault();
-        // перезапуск анимации оборота
         logo.classList.remove('logo-spin'); void logo.offsetWidth; logo.classList.add('logo-spin');
         const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
         const goTop = ()=> window.scrollTo({top:0, behavior: reduce ? 'auto' : 'smooth'});
-        if($('#view-home').hidden){        // если открыта страница дела — сначала домой
+        if($('#view-home').hidden){
             location.hash = '#/';
             setTimeout(goTop, 90);
         } else {
-            goTop();                          // уже на главной — просто вверх
+            goTop();
         }
     });
 })();
@@ -478,7 +521,7 @@ document.addEventListener('click', e=>{
 /* ============ МОБИЛЬНОЕ МЕНЮ ============ */
 (function(){
     const drawer=$('#nav-drawer'), backdrop=$('#nav-backdrop');
-    $('#nav-drawer-list').innerHTML = $('#main-nav').innerHTML; // ссылки не дублируются вручную
+    $('#nav-drawer-list').innerHTML = $('#main-nav').innerHTML;
     const open =()=>{ drawer.classList.add('open'); backdrop.classList.add('open'); document.body.classList.add('no-scroll'); drawer.setAttribute('aria-hidden','false'); };
     const close=()=>{ drawer.classList.remove('open'); backdrop.classList.remove('open'); document.body.classList.remove('no-scroll'); drawer.setAttribute('aria-hidden','true'); };
     $('#nav-open').addEventListener('click', open);
