@@ -423,5 +423,6 @@ body.no-scroll{overflow:hidden}
     padding:14px 18px;margin:18px 0}
 .bn-label{display:block;font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
     color:var(--teal);margin-bottom:6px}
-.backstory-note p{color:var(--ink);font-size:14.5px;line-height:1.7}
-.backstory-note strong{color:var(--teal)}
+.bn-line{margin:0 0 6px;color:var(--ink);font-size:14.5px;line-height:1.5}
+.bn-line strong{color:var(--teal)}
+.bn-desc{margin:0;color:var(--muted);font-size:13.5px;line-height:1.65}
