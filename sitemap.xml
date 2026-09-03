@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset>
+<urlset xmlns="http://sitemaps.org">
   <url>
-    <loc>https://vireist.ru/</loc>
-    <lastmod>2026-09-03T10:36:40+00:00</lastmod>
-    <priority>1.0000</priority>
+    <loc>https://vireist.ru</loc>
+    <lastmod>2026-09-03</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
   </url>
 </urlset>
