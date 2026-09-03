@@ -436,7 +436,8 @@ function renderGame(id){
     </dl>
     ${m.backstory && state.backstory[m.backstory] ? `<div class="backstory-note">
       <span class="bn-label">/// подготовка персонажа</span>
-      <p><strong>Предыстория:</strong> ${esc(state.backstory[m.backstory].label||'')} — ${esc(state.backstory[m.backstory].description||'')}</p>
+      <p class="bn-line"><strong>Предыстория:</strong> ${esc(state.backstory[m.backstory].label||'')}</p>
+      <p class="bn-desc">${esc(state.backstory[m.backstory].description||'')}</p>
     </div>` : ''}
     <div class="doc-body">${mdToHtml(g.body)}</div>
     ${(state.config.safetyApproach||m.veils||m.focus||m.safetyNote) ? `<div class="safety-block"><span class="cw-label">/// фокус и вуали</span>
