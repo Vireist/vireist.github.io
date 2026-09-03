@@ -1,8 +1,11 @@
-<!--Generated with https://sitemap-xml.ru-->
-<urlset xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/css" href="https://www.xml-sitemaps.com/css/sitemap.css"?>
+<urlset
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://vireist.ru/</loc>
-    <lastmod>2026-09-03T08:15:35+03:00</lastmod>
-    <priority>1.0</priority>
+    <lastmod>2026-09-03T10:36:40+00:00</lastmod>
+    <priority>1.0000</priority>
   </url>
 </urlset>
