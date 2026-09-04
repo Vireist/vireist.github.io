@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://vireist.ru
+Sitemap: https://vireist.ru/sitemap.xml
