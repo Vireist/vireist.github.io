@@ -127,7 +127,7 @@ function buildStatic(){
     const c = state.config;
     const nick = c.nick || 'Vireist';
     const name = c.name || '';
-    document.title = (name ? name + ' «' + nick + '» — ' : nick + ' — ') + '· Досье мастера';
+    document.title = (name ? name + nick : nick) + ' · Досье мастера';
     $('#logo-nick').textContent = (c.nick||'VIREIST').toUpperCase();
     $('#hero-overline').textContent = c.overline || '';
     $('#hero-name').innerHTML = esc(c.name||'') + ' <span class="accent">«' + esc(c.nick||'') + '»</span>';
