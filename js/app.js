@@ -166,6 +166,56 @@ function buildStatic(){
    <div class="tags">${(c.included||[]).map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div>` : '';
     inc.hidden = !inc.innerHTML.trim();
     const fl = $('#fan-line'); fl.textContent = c.fanDisclaimer||''; fl.hidden = !c.fanDisclaimer;
+
+    /* ============ СТОИМОСТЬ ИГР ============ */
+    const pr=c.pricing||{}, prw=$('#pricing-block');
+    if(pr.title){
+        prw.hidden=false;
+        $('#pricing-title').textContent=pr.title;
+        $('#pricing-amount').textContent=pr.standard||'';
+        $('#pricing-standard-note').textContent=pr.standardNote||'';
+        const pn=$('#pricing-note'); pn.textContent=pr.note||''; pn.hidden=!pr.note;
+    } else prw.hidden=true;
+
+    /* ============ ИГРА ПО ЗАПРОСУ ============ */
+    const cm=c.commission||{}, cw=$('#commission');
+    if(cm.title){
+        cw.hidden=false;
+        $('#commission-title').textContent=cm.title;
+        $('#commission-intro').textContent=cm.intro||'';
+        $('#commission-steps').innerHTML=(cm.steps||[]).map((s,i)=>`
+          <div class="commission-step">
+            <span class="c-num">${String(i+1).padStart(2,'0')}</span>
+            <h4>${esc(s.title||'')}</h4>
+            <p>${esc(s.text||'')}</p>
+          </div>`).join('');
+        const cn=$('#commission-note'); cn.textContent=cm.note||''; cn.hidden=!cm.note;
+        $('#commission-cta').textContent=cm.ctaLabel||'Оставить заявку';
+    } else cw.hidden=true;
+
+    /* ============ ПРИКЛЮЧЕНИЕ ПО ЗАКАЗУ ============ */
+    const cs=c.customStory||{}, csw=$('#custom-story');
+    if(cs.title){
+        csw.hidden=false;
+        $('#cs-title').textContent=cs.title;
+        $('#cs-subtitle').textContent=cs.subtitle||'';
+        $('#cs-intro').textContent=cs.intro||'';
+        $('#cs-features').innerHTML=(cs.features||[]).map(f=>`
+          <div class="cs-feature">
+            <span class="cs-icon">${esc(f.icon||'✦')}</span>
+            <span>${esc(f.text||'')}</span>
+          </div>`).join('');
+        $('#cs-process').innerHTML=(cs.process||[]).map((p,i)=>`
+          <div class="cs-step">
+            <span class="cs-num">${String(i+1).padStart(2,'0')}</span>
+            <h4>${esc(p.title||'')}</h4>
+            <p>${esc(p.text||'')}</p>
+          </div>`).join('');
+        const csp=$('#cs-pricing'); csp.textContent=cs.pricing||''; csp.hidden=!cs.pricing;
+        const csn=$('#cs-note'); csn.textContent=cs.note||''; csn.hidden=!cs.note;
+        $('#cs-cta').textContent=cs.ctaLabel||'Заказать разработку';
+    } else csw.hidden=true;
+
     const rn=$('#reviews-note');
     const notes=Array.isArray(c.reviewsNote)?c.reviewsNote:(c.reviewsNote?[c.reviewsNote]:[]);
     rn.innerHTML=notes.map(t=>`<p class="section-note">${esc(t)}</p>`).join('');
