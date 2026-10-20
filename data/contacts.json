@@ -1,5 +1,32 @@
 [
-  {"icon": "telegram", "title": "Telegram", "handle": "@vireist", "url": "https://t.me/vireist", "note": "самый быстрый способ связаться", "preferred": "Самый быстрый"},
-  {"icon": "mail", "title": "Почта", "handle": "vireist@proton.me", "url": "mailto:vireist@proton.me", "note": "для договорённостей и предложений"},
-  {"icon": "discord", "title": "Discord", "handle": "vireist", "url": "https://discord.gg/vireist", "note": "голос, внеигровые разговоры. Возможна задержка ответа!"}
+  {
+    "icon": "telegram",
+    "title": "Telegram-канал",
+    "handle": "@vireist_nri",
+    "url": "https://t.me/vireist_nri",
+    "note": "Наборы на 24 часа раньше остальных + авторский контент, новости мастерской, закулисье разработки игр.",
+    "preferred": "Канал"
+  },
+  {
+    "icon": "telegram",
+    "title": "Telegram",
+    "handle": "@vireist",
+    "url": "https://t.me/vireist",
+    "note": "Самый быстрый способ связаться лично — для записи и вопросов.",
+    "preferred": "Самый быстрый"
+  },
+  {
+    "icon": "mail",
+    "title": "Почта",
+    "handle": "vireist@proton.me",
+    "url": "mailto:vireist@proton.me",
+    "note": "Для формальных предложений, сотрудничества и больших проектов."
+  },
+  {
+    "icon": "discord",
+    "title": "Discord",
+    "handle": "vireist",
+    "url": "https://discord.gg/vireist",
+    "note": "Голосовое общение и внеигровые разговоры. Возможна задержка ответа."
+  }
 ]

@@ -438,7 +438,7 @@ body.no-scroll{overflow:hidden}
 .rev-form a:hover{border-bottom-style:solid}
 
 /* ============ ИГРА ПО ЗАПРОСУ ============ */
-.commission{position:relative;margin-top:34px;border:1px solid var(--teal);
+.commission{position:relative;margin-top:28px;border:1px solid var(--teal);
     background:color-mix(in srgb, var(--teal) 5%, var(--panel));padding:26px 24px 22px}
 .commission::before{content:"по запросу";position:absolute;top:-12px;left:20px;
     font-family:var(--mono);font-size:11px;letter-spacing:.24em;text-transform:uppercase;
@@ -455,7 +455,7 @@ body.no-scroll{overflow:hidden}
     border-left:3px solid var(--orange);padding-left:14px;margin-bottom:16px}
 
 /* ============ ПРИКЛЮЧЕНИЕ ПО ЗАКАЗУ ============ */
-.custom-story{position:relative;margin-top:34px;border:2px solid var(--teal);
+.custom-story{position:relative;margin-top:44px;border:2px solid var(--teal);
     background:linear-gradient(135deg, color-mix(in srgb, var(--teal) 8%, var(--panel)), var(--panel));
     padding:32px 28px 28px}
 .cs-stamp{position:absolute;top:-14px;left:24px;font-family:var(--mono);font-size:12px;letter-spacing:.28em;
@@ -496,3 +496,7 @@ body.no-scroll{overflow:hidden}
     background:color-mix(in srgb, var(--teal) 7%, var(--panel));
     color:var(--teal)}
 .cs-feature:hover .cs-icon{color:var(--ink)}
+
+/* ============ ГЛАВНАЯ ПЛОЩАДКА В НАБОРАХ И КОНТАКТЫ: ШИРОКАЯ ПЛАШКА ============ */
+#recruits-list .contact-card:first-child,
+#contacts-list .contact-card:first-child{grid-column:1/-1;align-items:center}
