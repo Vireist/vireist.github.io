@@ -2,10 +2,11 @@
   "games": [
     "data/games/001-worlds-gone-beautiful.md",
     "data/games/002-backup.md",
-    "data/games/003-uroboros.md",
+    "data/games/003-uroboros-fort.md",
     "data/games/004-motel.md",
     "data/games/005-may-24th.md",
-    "data/games/006-irreality.md"
+    "data/games/006-irreality.md",
+    "data/games/007-uroboros-inconu.md"
   ],
   "reviews": [
     "data/reviews/anonymous-1.md",
