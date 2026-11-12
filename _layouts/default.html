@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  {% assign c = site.data.config %}
+  {% assign meta_desc = page.teaser | default: page.description | default: site.description %}
+  <title>{% if page.title %}{{ page.title }} — {{ c.nick }}{% else %}{{ site.title }}{% endif %}</title>
+  <meta name="description" content="{{ meta_desc }}">
+  <link rel="canonical" href="{{ page.url | absolute_url }}">
+  <meta property="og:type" content="{% if page.layout == 'game' %}article{% else %}website{% endif %}">
+  <meta property="og:title" content="{{ page.title | default: site.title }}">
+  <meta property="og:description" content="{{ meta_desc }}">
+  <meta property="og:url" content="{{ page.url | absolute_url }}">
+  {% if page.cover %}<meta property="og:image" content="{{ page.cover | absolute_url }}">{% endif %}
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+  <script>try{var t=localStorage.getItem('vireist-theme');if(t)document.documentElement.dataset.theme=t;}catch(e){}</script>
+  <script>window.SITE_CONFIG={{ site.data.config | jsonify }};</script>
+</head>
+<body>
+{% include header.html %}
+<main>{{ content }}</main>
+{% include footer.html %}
+<script src="/js/app.js"></script>
+</body>
+</html>

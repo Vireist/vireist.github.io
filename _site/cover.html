@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Обложка объявления — Vireist</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --bg:#0d1214;--ink:#ece7da;--muted:#93a5a1;--line:#1f2c30;
+            --grid:rgba(148,180,175,.07);--teal:#39d5bf;
+            --mono:"JetBrains Mono",monospace;--serif:"PT Serif",serif;--disp:"Oswald",sans-serif;
+        }
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{min-height:100vh;display:grid;place-items:center;background:#07090a;padding:24px}
+        .cover{
+            width:1080px;height:1080px;position:relative;padding:70px 74px;
+            display:flex;flex-direction:column;color:var(--ink);border:1px solid var(--line);
+            background-color:var(--bg);
+            background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+            background-size:54px 54px;
+        }
+        .top{display:flex;justify-content:space-between;align-items:flex-start}
+        .logo{display:flex;gap:14px;align-items:center}
+        .logo-v{width:44px;height:44px;border:2px solid var(--teal);color:var(--teal);display:grid;place-items:center;font:700 20px var(--mono);transform:rotate(-4deg)}
+        .logo b{display:block;font:600 20px var(--disp);letter-spacing:.14em}
+        .logo small{font:400 11px var(--mono);letter-spacing:.3em;color:var(--muted)}
+        .stamp{font:500 14px var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--teal);
+            border:1px solid var(--teal);outline:1px solid var(--teal);outline-offset:3px;padding:10px 16px;transform:rotate(2deg)}
+        .mid{margin:auto 0}
+        .overline{font:400 15px var(--mono);letter-spacing:.4em;text-transform:uppercase;color:var(--teal)}
+        h1{font:700 104px/1 var(--disp);text-transform:uppercase;margin:26px 0 18px}
+        h1 span{color:var(--teal)}
+        .role{font:400 19px var(--mono);letter-spacing:.16em;text-transform:uppercase}
+        .role i{font-style:normal;color:var(--teal)}
+        .text{margin-top:26px;font:400 24px/1.6 var(--serif);color:var(--muted);max-width:780px}
+        .chips{display:flex;gap:12px;margin-top:30px;flex-wrap:wrap}
+        .chip{font:500 15px var(--mono);letter-spacing:.18em;text-transform:uppercase;color:var(--muted);border:1px solid var(--line);padding:9px 14px}
+        .bottom{display:flex;align-items:flex-end;gap:34px;border-top:1px dashed var(--line);padding-top:34px}
+        .qr{background:#fff;padding:14px;width:212px;height:212px;flex:none}
+        .qr canvas{width:100%;height:100%;display:block}
+        .url{font:700 30px var(--mono);color:var(--teal);word-break:break-all}
+        .url-note{margin-top:10px;font:400 15px var(--mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+        .tape{position:absolute;width:150px;height:36px;background:rgba(57,213,191,.35)}
+        .tape.tl{top:-16px;left:60px;transform:rotate(-2deg)}
+        .tape.br{bottom:-16px;right:60px;transform:rotate(2deg)}
+        .cover.wide{width:1200px;height:630px;padding:44px 56px}
+        .cover.wide h1{font-size:64px;margin:14px 0 10px}
+        .cover.wide .text,.cover.wide .chips{display:none}
+        .cover.wide .qr{width:150px;height:150px}
+        .cover.wide .url{font-size:26px}
+        .cover.wide .stamp{font-size:12px;padding:8px 12px}
+    </style>
+</head>
+<body>
+<div class="cover">
+    <span class="tape tl"></span><span class="tape br"></span>
+    <div class="top">
+        <div class="logo"><span class="logo-v">V</span><span><b>VIREIST</b><small>ДОСЬЕ МАСТЕРА</small></span></div>
+        <div class="stamp">Постоянный набор игроков</div>
+    </div>
+    <div class="mid">
+        <div class="overline">выбор · драма · игры разума</div>
+        <h1>ИВАН <span>«VIREIST»</span></h1>
+        <div class="role"><i>///</i> НРИ-мастер и автор приключений</div>
+        <p class="text">Ваншоты, кампании и сеттинги на D&D 5e и авторских системах. Карты и визуал, музыка под сцены, раздатки — и полная свобода отыгрыша.</p>
+        <div class="chips"><span class="chip">D&D 5e14</span><span class="chip">Irreality</span><span class="chip">Полифония</span></div>
+    </div>
+    <div class="bottom">
+        <div class="qr"><canvas id="qr"></canvas></div>
+        <div>
+            <div class="url" id="url-text"></div>
+            <div class="url-note">полный каталог игр — на сайте</div>
+        </div>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+    /* Вставьте вашу ссылку — она попадёт в QR и в текст на обложке */
+    const LINK  = "https://vireist.ru";
+    const SHORT = "vireist.ru";   /* читаемый адрес без https:// */
+    new QRious({element:document.getElementById('qr'), value:LINK, size:560, level:'M', padding:0, background:'#ffffff', foreground:'#101416'});
+    document.getElementById('url-text').textContent = SHORT;
+    /* "wide" — превью 1200×630, "square" — пост 1080×1080 */
+    const FORMAT = "widef";
+    if (FORMAT === "wide") document.querySelector('.cover').classList.add('wide');
+</script>
+</body>
+</html>

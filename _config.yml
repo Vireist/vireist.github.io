@@ -1,0 +1,35 @@
+title: Vireist — досье мастера
+description: НРИ-мастер и автор приключений
+url: "https://vireist.ru"
+baseurl: ""
+lang: ru
+
+collections:
+  games:
+    output: true
+    permalink: /games/:name/
+  reviews:
+    output: false
+
+defaults:
+  - scope: { path: "", type: games }
+    values: { layout: game }
+
+markdown: kramdown
+kramdown:
+  input: GFM
+  auto_ids: true
+
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+exclude:
+  - .idea
+  - README.md
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - tests
+  - package.json
+  - playwright.config.js

@@ -1,0 +1,12 @@
+{% assign c = site.data.config %}
+<footer class="footer">
+    <div class="container">
+        <p id="age-line">{% if c.siteAge %}Возрастная маркировка материалов сайта: {{ c.siteAge }}{% endif %}</p>
+        {% if c.bugReport.url %}
+        <p id="bug-line">{{ c.bugReport.text }} <a href="{{ c.bugReport.url }}" target="_blank" rel="noopener">{{ c.bugReport.handle }}</a></p>
+        {% endif %}
+        {% if c.fanDisclaimer %}<p id="fan-line">{{ c.fanDisclaimer }}</p>{% endif %}
+        <p id="license-line">Материалы публикуются под лицензией {{ c.license }}: делитесь и адаптируйте для своих игр с указанием автора, без коммерческого использования.</p>
+        <p class="footer-copy">© {{ site.time | date: "%Y" }} <span id="footer-nick">{{ c.nick }}</span> · собрано мастером вручную</p>
+    </div>
+</footer>

@@ -1,0 +1,29 @@
+{% assign c = site.data.config %}
+<header class="topbar">
+    <div class="container topbar-in">
+        <a class="logo" href="/" aria-label="На главную">
+            <span class="logo-mark">V</span>
+            <span class="logo-text"><strong id="logo-nick">{{ c.nick | upcase }}</strong><small>досье мастера</small></span>
+        </a>
+        <nav class="nav" id="main-nav" aria-label="Основная навигация">
+            <a href="/#games">Игры</a>
+            <a href="/#recruits">Наборы</a>
+            <a href="/schedule/">Расписание</a>
+            <a href="/#services">По запросу</a>
+            <a href="/#about">Обо мне</a>
+            <a href="/#table">Стол</a>
+            <a href="/#reviews">Отзывы</a>
+            <a href="/#faq">FAQ</a>
+            <a href="/#contacts">Контакты</a>
+        </nav>
+        <div class="topbar-actions">
+            <button class="icon-btn" id="theme-btn" aria-label="Переключить тему">☀</button>
+            <button class="icon-btn burger" id="nav-open" aria-label="Открыть меню">☰</button>
+        </div>
+    </div>
+</header>
+<div class="drawer-backdrop" id="nav-backdrop"></div>
+<aside class="drawer" id="nav-drawer" aria-hidden="true">
+    <div class="drawer-head"><span>Меню</span><button class="icon-btn" id="nav-close" aria-label="Закрыть меню">✕</button></div>
+    <nav class="drawer-nav" id="nav-drawer-list" aria-label="Мобильная навигация"></nav>
+</aside>

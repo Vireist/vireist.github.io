@@ -1,243 +1,238 @@
-<!DOCTYPE html>
-<html lang="ru" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+---
+layout: default
+---
+{% assign c = site.data.config %}
+{% assign games = site.games %}
+{% assign systems = "" | split: "" %}
+{% assign formats = "" | split: "" %}
+{% assign settings = "" | split: "" %}
+{% assign all_tags = "" | split: "" %}
+{% for g in games %}
+{% if g.system and g.system != "" %}{% unless systems contains g.system %}{% assign systems = systems | push: g.system %}{% endunless %}{% endif %}
+{% if g.format and g.format != "" %}{% unless formats contains g.format %}{% assign formats = formats | push: g.format %}{% endunless %}{% endif %}
+{% if g.setting and g.setting != "" %}{% unless settings contains g.setting %}{% assign settings = settings | push: g.setting %}{% endunless %}{% endif %}
+{% if g.tags %}{% for t in g.tags %}{% if t and t != "" %}{% unless all_tags contains t %}{% assign all_tags = all_tags | push: t %}{% endunless %}{% endif %}{% endfor %}{% endif %}
+{% endfor %}
+{% assign systems = systems | sort %}
+{% assign formats = formats | sort %}
+{% assign settings = settings | sort %}
+{% assign all_tags = all_tags | sort %}
 
-  <title>Vireist · Досье мастера</title>
-  <meta name="description" content="НРИ-мастер и автор приключений: ваншоты, кампании и сеттинги на D&D 5e, Irreality и «Полифонии». Хоррор, драма и психологические игры.">
-
-  <!-- Open Graph / превью в мессенджерах -->
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Иван «Vireist» — досье мастера: НРИ, триллеры и драма">
-  <meta property="og:title" content="Vireist · Досье мастера<">
-  <meta property="og:description" content="Ваншоты, кампании и сеттинги на D&D 5e и авторских системах. Каталог игр, отзывы и наборы — внутри.">
-  <meta property="og:url" content="https://vireist.ru">
-  <meta property="og:image" content="https://vireist.ru/assets/announce-cover-wide.png">
-  <meta name="twitter:card" content="summary_large_image">
-
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%230d1214'/><rect x='7' y='7' width='18' height='18' fill='none' stroke='%2339d5bf' stroke-width='2' transform='rotate(-4 16 16)'/><text x='16' y='21' font-family='monospace' font-size='13' fill='%2339d5bf' text-anchor='middle'>V</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Oswald:wght@500;600;700&family=PT+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<header class="topbar">
-  <a class="logo" href="#/" aria-label="На главную">
-    <span class="logo-v">V</span>
-    <span class="logo-text"><strong id="logo-nick">VIREIST</strong><small>досье мастера</small></span>
-  </a>
-  <nav class="nav" id="main-nav">
-    <a href="#/" data-section="games">Игры</a>
-    <a href="#/" data-section="recruits">Наборы</a>
-    <a href="/schedule/">Расписание</a>
-    <a href="#/" data-section="services">По запросу</a>
-    <a href="#/" data-section="about">Обо мне</a>
-    <a href="#/" data-section="table">Стол</a>
-    <a href="#/" data-section="reviews">Отзывы</a>
-    <a href="#/" data-section="faq">FAQ</a>
-    <a href="#/" data-section="contacts">Контакты</a>
-  </nav>
-  <div class="topbar-actions">
-    <button id="theme-btn" class="theme-btn" aria-label="Переключить тему">☀</button>
-    <button class="burger" id="nav-open" aria-label="Открыть меню"><span></span><span></span><span></span></button>
-  </div>
-</header>
-
-<main>
-  <div id="view-home">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-left">
-          <div class="overline" id="hero-overline"></div>
-          <h1 class="display" id="hero-name"></h1>
-          <div class="hero-role" id="hero-role"></div>
-          <div class="geo-row" id="hero-geo"></div>
-          <p class="hero-text" id="hero-text"></p>
-          <div class="btn-row">
-            <a class="btn" href="#/" data-section="games">Открыть каталог</a>
-            <a class="btn ghost" href="#/" data-section="contacts">Связаться</a>
-          </div>
-          <div class="stamp" id="hero-stamp"></div>
-        </div>
-        <div class="hero-right" id="hero-photo"></div>
-      </div>
-      <div class="container stats" id="stats"></div>
-    </section>
-
-    <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker-track"></div></div>
-
-    <section class="section" id="games">
-      <div class="container">
-        <div class="sec-head">
-          <span class="sec-label">Раздел 01 — Картотека</span>
-          <h2>Каталог игр</h2>
-          <span class="sec-count" id="count">Найдено дел: 0</span>
-        </div>
-        <div class="filters-bar">
-          <button class="btn ghost" id="filters-open">Фильтры<span class="f-count" id="filters-count" hidden></span></button>
-        </div>
-        <p class="policy-note" id="price-note" hidden></p>
-        <div class="grid-cards" id="catalog"></div>
-      </div>
-    </section>
-
-    <section class="section" id="recruits">
-      <div class="pricing-block" id="pricing-block" hidden>
-        <h3 class="pricing-title" id="pricing-title"></h3>
-        <p class="pricing-standard">
-          <strong id="pricing-amount"></strong>
-          <span id="pricing-standard-note"></span>
-        </p>
-        <p class="pricing-note" id="pricing-note"></p>
-      </div>
-
-      <div class="container">
-        <div class="sec-head"><span class="sec-label">Раздел 02 — Справка</span><h2>Где искать наборы</h2></div>
-        <p class="section-note">Сайт не следит за отдельными наборами —&nbsp;они живут на живых площадках. Здесь&nbsp;—&nbsp;места, где мои наборы появляются чаще и быстрее всего.</p>
-        <p class="section-note">Если вас заинтересовала игра, набор на которую сейчас не проводится, то можно написать в личные сообщения, и я открою новый набор, специально для вас!</p>
-        <div class="recruit-grid" id="recruits-list"></div>
-        <div class="recruits-actions">
-          <a class="btn" href="/schedule/" target="_blank" rel="noopener">Посмотреть расписание на месяц</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="services">
-      <div class="container">
-        <div class="sec-head"><span class="sec-label">Раздел 03 — Услуги</span><h2>Игры по запросу</h2></div>
-        <p class="section-note">Нет подходящего набора или хотите уникальную историю? Два формата: проведение готовой игры в удобное время и разработка приключения под вашу группу.</p>
-
-        <div class="commission" id="commission" hidden>
-          <h3 class="commission-title" id="commission-title"></h3>
-          <p class="commission-intro" id="commission-intro"></p>
-          <div class="commission-steps" id="commission-steps"></div>
-          <p class="commission-note" id="commission-note"></p>
-          <a class="btn" id="commission-cta" href="#/" data-section="contacts"></a>
-        </div>
-
-        <div class="custom-story" id="custom-story" hidden>
-          <span class="cs-stamp">премиум</span>
-          <h3 class="cs-title" id="cs-title"></h3>
-          <p class="cs-subtitle" id="cs-subtitle"></p>
-          <p class="cs-intro" id="cs-intro"></p>
-          <div class="cs-features" id="cs-features"></div>
-          <div class="cs-process" id="cs-process"></div>
-          <p class="cs-pricing" id="cs-pricing"></p>
-          <p class="cs-note" id="cs-note"></p>
-          <a class="btn" id="cs-cta" href="#/" data-section="contacts"></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="about">
-      <div class="container">
-        <div class="sec-head"><span class="sec-label">Раздел 04 — Личный файл</span><h2>Обо мне</h2></div>
-        <div class="about-grid">
-          <div class="about-text" id="about-text"></div>
-          <aside class="systems">
-            <h3>Системы, на которых я веду</h3>
-            <div id="systems-list"></div>
-          </aside>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="table">
-      <div class="container">
-        <div class="sec-head"><span class="sec-label">Раздел 05 — Протокол стола</span><h2>За столом</h2></div>
-        <div class="table-cols" id="table-cols"></div>
-        <div class="included-banner" id="included" hidden></div>
-      </div>
-    </section>
-
-    <section class="section" id="reviews">
-      <div class="container">
-        <div class="sec-head">
-          <span class="sec-label">Раздел 06 — Свидетельские показания</span>
-          <h2>Отзывы</h2>
-          <span class="sec-count" id="reviews-count"></span>
-        </div>
-        <div id="reviews-note" hidden></div>
-        <div class="rev-grid" id="reviews-list"></div>
-        <div class="sec-foot" id="reviews-foot" hidden></div>
-        <div class="rev-form" id="rev-form" hidden>
-          <span class="tape"></span>
-          <img id="rev-form-qr" src="" alt="QR-код формы отзыва">
-          <p id="rev-form-text"></p>
-          <a id="rev-form-link" href="#" target="_blank" rel="noopener"></a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="faq">
-      <div class="container">
-        <div class="sec-head"><span class="sec-label">Раздел 07 — Вопросы из протокола</span><h2>FAQ</h2></div>
-        <div class="faq-list" id="faq-list"></div>
-      </div>
-    </section>
-
-    <section class="section" id="contacts">
-      <div class="container">
-        <div class="sec-head"><span class="sec-label">Раздел 08 — Каналы связи</span><h2>Контакты</h2></div>
-        <p class="section-note">По вопросам проведения игр, материалов и сотрудничества. Отвечаю обычно в течение дня.</p>
-        <div class="contact-grid" id="contacts-list"></div>
-      </div>
-    </section>
-  </div>
-
-  <div id="view-game" hidden></div>
-</main>
-
-<footer class="footer">
-  <div class="container">
-    <p id="age-line" hidden></p>
-    <p id="bug-line" hidden></p>
-    <p id="fan-line" hidden></p>
-    <p id="license-line"></p>
-    <p>© <span id="year"></span> <span id="footer-nick"></span> · собрано мастером вручную · контент редактируется через файлы — см. README.md</p>
-  </div>
-</footer>
-
-<div class="drawer-backdrop" id="filters-backdrop"></div>
-<aside class="drawer" id="filters-drawer" aria-hidden="true" aria-label="Фильтры игр">
-  <div class="drawer-head">
-    <span class="drawer-title">Фильтры</span>
-    <button class="drawer-close" id="filters-close" aria-label="Закрыть фильтры">×</button>
-  </div>
-
-  <div class="filters">
-    <input id="search" class="search" type="search" placeholder="Поиск по названию…" autocomplete="off">
-    <div class="filter-row"><span class="f-label">Система:</span><div class="chip-group" id="f-system"></div></div>
-    <div class="filter-row"><span class="f-label">Формат:</span><div class="chip-group" id="f-format"></div></div>
-    <div class="filter-row"><span class="f-label">Сеттинг:</span><div class="chip-group" id="f-setting"></div></div>
-    <div class="filter-row"><span class="f-label">Теги:</span><div class="chip-group" id="f-tags"></div></div>
-    <div class="filter-row"><span class="f-label">Цена:</span>
-      <div class="chip-group" id="f-price">
-        <button class="chip active" data-price="">Все</button>
-        <button class="chip" data-price="бесплатно">Бесплатно</button>
-        <button class="chip" data-price="платно">Платно</button>
+<section class="hero" id="top">
+  <div class="container hero-in">
+    <div class="hero-copy">
+      <p class="overline" id="hero-overline">{{ c.overline }}</p>
+      <h1 id="hero-name">{{ c.name }} <span class="accent">«{{ c.nick }}»</span></h1>
+      <p class="role" id="hero-role"><span class="slashes">///</span> {{ c.role | upcase }}</p>
+      <p class="hero-text" id="hero-text">{{ c.heroText }}</p>
+      <div class="hero-geo" id="hero-geo">{% for g in c.geo %}<span class="geo-stamp">{{ g }}</span>{% endfor %}</div>
+      <div class="stats" id="stats">
+        <div class="stat"><b>{{ games.size }}</b><span>дел в архиве</span></div>
+        <div class="stat"><b>{{ systems.size }}</b><span>системы</span></div>
+        <div class="stat"><b>{{ formats.size }}</b><span>формата</span></div>
       </div>
     </div>
+    <div class="hero-photo" id="hero-photo">
+      {% if c.portrait %}
+      <figure class="polaroid"><span class="tape"></span><img src="{{ c.portrait | relative_url }}" alt="Портрет ведущего"><figcaption>{{ c.portraitCaption }}</figcaption><span class="tape b"></span></figure>
+      {% endif %}
+      {% if c.stamp %}<span class="hero-stamp" id="hero-stamp">{{ c.stamp }}</span>{% endif %}
+    </div>
   </div>
+  <div class="ticker"><div class="ticker-track" id="ticker-track">{% for t in c.ticker %}<span>{{ t }}</span><i>✦</i>{% endfor %}{% for t in c.ticker %}<span>{{ t }}</span><i>✦</i>{% endfor %}</div></div>
+</section>
 
-  <div class="drawer-foot">
-    <button class="btn" id="filters-apply">Показать дела</button>
-    <button class="btn ghost" id="filters-reset">Сбросить</button>
+<section class="section" id="games">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 01 — Картотека</span><h2>Дела в архиве</h2></div>
+    <div class="filters-bar">
+      <input type="search" id="search" placeholder="Поиск по названию…" aria-label="Поиск по названию">
+      <button class="btn ghost" id="filters-open">Фильтры <span class="filters-count" id="filters-count" hidden></span></button>
+      <span class="sec-count" id="count">Найдено дел: {{ games.size }}</span>
+    </div>
+    <div class="catalog" id="catalog">
+      {% for g in games %}{% include game-card.html g=g %}{% endfor %}
+    </div>
+    <div class="empty-state" id="catalog-empty" hidden>По такому запросу дел нет — сбросьте фильтры.<br><button class="btn ghost" id="reset-f">Сбросить</button></div>
   </div>
+</section>
+
+<div class="drawer-backdrop" id="filters-backdrop"></div>
+<aside class="drawer" id="filters-drawer" aria-hidden="true">
+  <div class="drawer-head"><span>Фильтры</span><button class="icon-btn" id="filters-close" aria-label="Закрыть фильтры">✕</button></div>
+  <div class="drawer-body">
+    <div class="filter-group"><span class="filter-label">Система</span><div class="chip-group" id="f-system"><button class="chip active" data-val="">Все</button>{% for s in systems %}<button class="chip" data-val="{{ s | downcase }}">{{ s }}</button>{% endfor %}</div></div>
+    <div class="filter-group"><span class="filter-label">Формат</span><div class="chip-group" id="f-format"><button class="chip active" data-val="">Все</button>{% for s in formats %}<button class="chip" data-val="{{ s | downcase }}">{{ s }}</button>{% endfor %}</div></div>
+    <div class="filter-group"><span class="filter-label">Вселенная</span><div class="chip-group" id="f-setting"><button class="chip active" data-val="">Все</button>{% for s in settings %}<button class="chip" data-val="{{ s | downcase }}">{{ s }}</button>{% endfor %}</div></div>
+    <div class="filter-group"><span class="filter-label">Теги</span><div class="chip-group" id="f-tags" data-tags='{{ all_tags | jsonify }}'></div></div>
+    <div class="filter-group"><span class="filter-label">Стоимость</span><div class="chip-group" id="f-price"><button class="chip active" data-price="">Все</button><button class="chip" data-price="платно">Платно</button><button class="chip" data-price="бесплатно">Бесплатно</button></div></div>
+  </div>
+  <div class="drawer-foot"><button class="btn ghost" id="filters-reset">Сбросить</button><button class="btn" id="filters-apply">Применить</button></div>
 </aside>
 
-<div class="drawer-backdrop" id="nav-backdrop"></div>
-<aside class="drawer nav-drawer" id="nav-drawer" aria-hidden="true" aria-label="Меню">
-  <div class="drawer-head">
-    <span class="drawer-title">Содержание</span>
-    <button class="drawer-close" id="nav-close" aria-label="Закрыть меню">×</button>
-  </div>
-  <nav class="nav-drawer-list" id="nav-drawer-list"></nav>
-</aside>
+<section class="section" id="recruits">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 02 — Справка</span><h2>Где искать наборы</h2></div>
+    <p class="section-note">Сайт не следит за отдельными наборами — они живут на живых площадках. Здесь — места, где мои наборы появляются чаще и быстрее всего.</p>
+    <p class="section-note">Если вас заинтересовала игра, набор на которую сейчас не проводится, — её можно заказать: на коммерческой основе, своей компанией или через открытый набор. Как это устроено — в разделе «Игры по запросу».</p>
 
-<script src="js/app.js"></script>
-</body>
-</html>
+    {% if c.pricing %}
+    <div class="pricing-block">
+      <h3 class="pricing-title">{{ c.pricing.title }}</h3>
+      <p class="pricing-standard"><strong>{{ c.pricing.standard }}</strong> <span>{{ c.pricing.standardNote }}</span></p>
+      <p class="pricing-note">{{ c.pricing.note }}</p>
+    </div>
+    {% endif %}
+
+    <div class="contacts-list" id="recruits-list">
+      {% for r in site.data.recruits %}
+      <a class="contact-card{% if r.preferred %} preferred{% endif %}" href="{{ r.url }}" target="_blank" rel="noopener">
+        {% if r.preferred %}<span class="pref-stamp">{{ r.preferred }}</span>{% endif %}
+        <span class="c-text"><strong>{{ r.title }}</strong><em>{{ r.handle }}</em><small>{{ r.note }}</small></span>
+        <span class="c-arrow">→</span>
+      </a>
+      {% endfor %}
+    </div>
+    <div class="recruits-actions"><a class="btn" href="/schedule/">Посмотреть расписание на месяц</a></div>
+  </div>
+</section>
+
+<section class="section" id="services">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 03 — Услуги</span><h2>Игры по запросу</h2></div>
+    <p class="section-note">Нет подходящего набора или хотите уникальную историю? Два формата: проведение готовой игры в удобное время и разработка приключения под вашу группу.</p>
+
+    {% if c.commission %}
+    <div class="commission">
+      <h3 class="commission-title">{{ c.commission.title }}</h3>
+      <p class="commission-intro">{{ c.commission.intro }}</p>
+      <div class="commission-steps">
+        {% for s in c.commission.steps %}
+        <div class="commission-step"><span class="c-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span><h4>{{ s.title }}</h4><p>{{ s.text }}</p></div>
+        {% endfor %}
+      </div>
+      {% if c.commission.note %}<p class="commission-note">{{ c.commission.note }}</p>{% endif %}
+      <a class="btn" href="/#contacts">{{ c.commission.ctaLabel | default: "Оставить заявку" }}</a>
+    </div>
+    {% endif %}
+
+    {% if c.customStory %}
+    <div class="custom-story">
+      <span class="cs-stamp">премиум</span>
+      <h3 class="cs-title">{{ c.customStory.title }}</h3>
+      <p class="cs-subtitle">{{ c.customStory.subtitle }}</p>
+      <p class="cs-intro">{{ c.customStory.intro }}</p>
+      <div class="cs-features">
+        {% for f in c.customStory.features %}<div class="cs-feature"><span class="cs-icon">{{ f.icon | default: "✦" }}</span><span>{{ f.text }}</span></div>{% endfor %}
+      </div>
+      <div class="cs-process">
+        {% for p in c.customStory.process %}
+        <div class="cs-step"><span class="cs-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span><h4>{{ p.title }}</h4><p>{{ p.text }}</p></div>
+        {% endfor %}
+      </div>
+      {% if c.customStory.pricing %}<p class="cs-pricing">{{ c.customStory.pricing }}</p>{% endif %}
+      {% if c.customStory.note %}<p class="cs-note">{{ c.customStory.note }}</p>{% endif %}
+      <a class="btn" href="/#contacts">{{ c.customStory.ctaLabel | default: "Заказать разработку" }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" id="about">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 04 — Личное дело</span><h2>Обо мне</h2></div>
+    {% capture about_md %}{% include about.md %}{% endcapture %}
+    <div class="about-text" id="about-text">{{ about_md | markdownify }}</div>
+    <h3 class="sub-head">Системы, на которых я веду</h3>
+    <div class="systems-list" id="systems-list">
+      {% for s in c.systems %}
+      <div class="sys-card"><h4>{{ s.title }} <span class="tagline">// {{ s.tag }}</span></h4><p>{{ s.text }}</p></div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="table">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 05 — Протокол</span><h2>Что будет за столом</h2></div>
+    <div class="table-cols" id="table-cols">
+      {% for col in site.data.table %}
+      <div class="table-col">
+        <h3 class="table-title{% if col.type == 'no' %} neg{% endif %}">{{ col.title }}</h3>
+        <div class="table-stack">
+          {% for it in col.items %}
+          <div class="table-card{% if col.type == 'no' %} no{% endif %}"><span class="t-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span><h3>{{ it.title }}</h3><p>{{ it.text }}</p></div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% if c.includedText or c.included %}
+    <div class="included" id="included">
+      <span class="incl-stamp">всё включено</span><p>{{ c.includedText }}</p>
+      <div class="tags">{% for t in c.included %}<span class="tag">{{ t }}</span>{% endfor %}</div>
+    </div>
+    {% endif %}
+    {% if c.priceNote %}<p class="section-note" id="price-note">{{ c.priceNote }}</p>{% endif %}
+  </div>
+</section>
+
+<section class="section" id="reviews">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 06 — Показания</span><h2>Отзывы игроков</h2> <span class="sec-count" id="reviews-count"></span></div>
+    {% if c.reviewsNote %}<div id="reviews-note">{% for n in c.reviewsNote %}<p class="section-note">{{ n }}</p>{% endfor %}</div>{% endif %}
+    <div class="rev-grid" id="reviews-list">
+      {% for r in site.reviews %}
+      {% assign rnum = r.game | append: "" | prepend: "000" | slice: -3, 3 %}
+      {% assign label = r.game %}
+      {% for g in games %}
+      {% assign gslug = g.url | remove: "/games/" | remove: "/" %}
+      {% assign gnum = gslug | split: "-" | first %}
+      {% if rnum == gnum %}{% assign label = g.title | prepend: "«" | append: "»" %}{% endif %}
+      {% endfor %}
+      <figure class="rev-card" style="--rot:{% cycle '-1.6deg', '1.3deg' %}">
+        {% if r.reply %}<span class="rev-flag">ответ мастера</span>{% endif %}
+        {{ r.content | markdownify }}
+        {% if r.reply %}<div class="rev-reply"><span class="rev-reply-label">/// {{ r.replyLabel | default: "ответ мастера" }}</span><p>{{ r.reply }}</p></div>{% endif %}
+        <figcaption><span class="rev-name">{{ r.name | default: "Аноним" }}</span><span class="rev-game">{{ label }}</span></figcaption>
+      </figure>
+      {% endfor %}
+    </div>
+    <div class="reviews-foot" id="reviews-foot"></div>
+    {% if c.reviewForm.url %}
+    <div class="rev-form">
+      <span class="tape"></span>
+      {% if c.reviewForm.qr %}<img src="{{ c.reviewForm.qr | relative_url }}" alt="QR-код формы отзыва">{% endif %}
+      <p>{{ c.reviewForm.text }}</p>
+      <a href="{{ c.reviewForm.url }}" target="_blank" rel="noopener">{{ c.reviewForm.linkLabel | default: "открыть форму" }}</a>
+    </div>
+    {% endif %}
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 07 — Вопросы</span><h2>FAQ</h2></div>
+    <div class="faq-list" id="faq-list">
+      {% for f in site.data.faq %}
+      <details class="faq-item"><summary>{{ f.q }}</summary><div class="faq-a"><div class="faq-a-in">{{ f.a | markdownify }}</div></div></details>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="section" id="contacts">
+  <div class="container">
+    <div class="sec-head"><span class="sec-label">Раздел 08 — Каналы связи</span><h2>Контакты</h2></div>
+    <p class="section-note">По вопросам проведения игр, материалов и сотрудничества. Отвечаю обычно в течение дня.</p>
+    <div class="contacts-list" id="contacts-list">
+      {% for r in site.data.contacts %}
+      <a class="contact-card{% if r.preferred %} preferred{% endif %}" href="{{ r.url }}" target="_blank" rel="noopener">
+        {% if r.preferred %}<span class="pref-stamp">{{ r.preferred }}</span>{% endif %}
+        <span class="c-text"><strong>{{ r.title }}</strong><em>{{ r.handle }}</em><small>{{ r.note }}</small></span>
+        <span class="c-arrow">→</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>

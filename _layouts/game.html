@@ -1,0 +1,110 @@
+---
+layout: default
+---
+{% assign c = site.data.config %}
+{% assign paid = page.price | downcase %}
+{% assign slug = page.url | remove: "/games/" | remove: "/" %}
+{% assign num = slug | split: "-" | first %}
+{% assign rel = "" | split: "" %}
+{% for r in site.reviews %}
+{% assign rnum = r.game | append: "" | prepend: "000" | slice: -3, 3 %}
+{% if rnum == num %}{% assign rel = rel | push: r %}{% endif %}
+{% endfor %}
+{% assign limit = c.gameReviewsLimit | default: 3 %}
+{% assign more = rel.size | minus: limit %}
+{% assign bs = site.data.backstory[page.backstory] %}
+
+<div class="container game-doc">
+    <a class="back" href="/#games">← В картотеку</a>
+    <div class="doc-head">
+        <span class="case-num">Дело № {{ num }}</span>
+        <span class="price {% if paid == 'платно' %}paid{% else %}free{% endif %}">{{ page.price }}</span>
+    </div>
+    <h2 class="doc-title">{{ page.title }}</h2>
+    <p class="hero-text">{{ page.teaser }}</p>
+
+    {% if page.cover %}
+    <div class="doc-cover"><img src="{{ page.cover | relative_url }}" alt=""></div>
+    {% else %}
+    <div class="doc-cover empty"></div>
+    {% endif %}
+
+    <dl class="doc-meta">
+        <div class="meta-half"><dt>Система</dt><dd class="t">{{ page.system }}</dd></div>
+        <div class="meta-half"><dt>Вселенная</dt><dd class="t">{{ page.setting | default: "—" }}</dd></div>
+        <div><dt>Формат</dt><dd>{{ page.format }}</dd></div>
+        <div><dt>Игроки</dt><dd>{{ page.players }}</dd></div>
+        <div><dt>Длительность</dt><dd>{{ page.duration }}</dd></div>
+        <div><dt>Стоимость</dt><dd>{{ page.price }}</dd></div>
+        <div class="meta-full"><dt>Возрастная маркировка</dt><dd>{{ page.age | default: c.ageDefault | default: "—" }}</dd></div>
+        {% if page.geo %}<div class="meta-full"><dt>География</dt><dd class="t">{{ page.geo }}</dd></div>{% endif %}
+    </dl>
+    {% if c.ageNote %}<small class="age-note">{{ c.ageNote }}</small>{% endif %}
+
+    {% if bs %}
+    <div class="backstory-note">
+        <span class="bn-label">/// подготовка персонажа</span>
+        <p class="bn-line"><strong>Предыстория:</strong> {{ bs.label }}</p>
+        <p class="bn-desc">{{ bs.description }}</p>
+    </div>
+    {% endif %}
+
+    {% capture body_html %}{{ content | markdownify }}{% endcapture %}
+    <div class="doc-body">{{ body_html | replace: '<h3', '<h4' | replace: '</h3>', '</h4>' | replace: '<h2', '<h3' | replace: '</h2>', '</h3>' | replace: '<h1', '<h2' | replace: '</h1>', '</h2>' }}</div>
+
+    {% if c.safetyApproach or page.veils or page.focus or page.safetyNote %}
+    <div class="safety-block">
+        <span class="cw-label">/// фокус и вуали</span>
+        {% if c.safetyApproach %}<p class="safety-approach">{{ c.safetyApproach }}</p>{% endif %}
+        <div class="safety-grid">
+            {% if page.focus.size > 0 %}
+            <div class="safety-col focus"><h4>Фокус</h4><small>база игры — может всплыть подробно</small>
+                <ul>{% for x in page.focus %}<li>{{ x }}</li>{% endfor %}</ul></div>
+            {% endif %}
+            {% if page.veils.size > 0 %}
+            <div class="safety-col veils"><h4>Вуали</h4><small>вряд ли всплывёт, либо вскользь</small>
+                <ul>{% for x in page.veils %}<li>{{ x }}</li>{% endfor %}</ul></div>
+            {% endif %}
+        </div>
+        {% if page.safetyNote %}<small class="safety-add">{{ page.safetyNote }}</small>{% endif %}
+        <small class="safety-note">Это карта игры, а не контракт. Если что-то чувствительно для вас — напишите до игры, обсудим. Механика «стоп» (X-card) работает в любом случае.</small>
+    </div>
+    {% endif %}
+
+    {% if rel.size > 0 %}
+    <div class="doc-reviews">
+        <h3 class="doc-reviews-title">/// показания по делу</h3>
+        <div class="rev-grid">
+            {% for r in rel limit: limit %}
+            <figure class="rev-card" style="--rot:{% cycle '-1.6deg', '1.3deg' %}">
+                {% if r.reply %}<span class="rev-flag">ответ мастера</span>{% endif %}
+                {{ r.content | markdownify }}
+                {% if r.reply %}<div class="rev-reply"><span class="rev-reply-label">/// {{ r.replyLabel | default: "ответ мастера" }}</span><p>{{ r.reply }}</p></div>{% endif %}
+                <figcaption><span class="rev-name">{{ r.name | default: "Аноним" }}</span><span class="rev-game">«{{ page.title }}»</span></figcaption>
+            </figure>
+            {% endfor %}
+        </div>
+        {% if more > 0 %}<a class="btn ghost doc-reviews-more" href="/#reviews">Ещё {{ more }} показаний — в общем архиве</a>{% endif %}
+    </div>
+    {% endif %}
+
+    <div class="doc-actions">
+        <a class="btn" href="/#contacts">Записаться на игру</a>
+        <a class="btn ghost" href="/#services">Заказать эту игру</a>
+        <a class="btn ghost" href="/#games">Все дела</a>
+    </div>
+</div>
+
+<script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Game",
+        "name": {{ page.title | jsonify }},
+    "description": {{ page.teaser | jsonify }},
+    "url": {{ page.url | absolute_url | jsonify }},
+    {% if page.cover %}"image": {{ page.cover | absolute_url | jsonify }},{% endif %}
+    "inLanguage": "ru",
+    "isAccessibleForFree": {% if paid == 'бесплатно' %}true{% else %}false{% endif %},
+    "author": { "@type": "Person", "name": {{ c.name | jsonify }}, "alternateName": {{ c.nick | jsonify }} }
+    }
+</script>

@@ -1,0 +1,34 @@
+{% assign g = include.g %}
+{% assign paid = g.price | downcase %}
+{% assign slug = g.url | remove: "/games/" | remove: "/" %}
+{% assign num = slug | split: "-" | first %}
+<article class="case-card" tabindex="0" role="link" aria-label="{{ g.title }}"
+         data-href="{{ g.url }}"
+         data-title="{{ g.title | downcase }}"
+         data-system="{{ g.system | downcase }}"
+         data-format="{{ g.format | downcase }}"
+         data-setting="{{ g.setting | downcase }}"
+         data-price="{{ paid }}"
+         data-tags="{{ g.tags | join: ',' | downcase }}">
+    <div class="case-top">
+        <span class="case-num">Дело № {{ num }}</span>
+        <span class="price {% if paid == 'платно' %}paid{% else %}free{% endif %}">{{ g.price }}</span>
+    </div>
+    {% if g.cover %}
+    <div class="case-cover"><img src="{{ g.cover | relative_url }}" alt="" loading="lazy"></div>
+    {% else %}
+    <div class="case-cover empty"></div>
+    {% endif %}
+    <div class="case-body">
+        <h3><a href="{{ g.url }}">{{ g.title }}</a></h3>
+        <p>{{ g.teaser }}</p>
+        <div class="meta">
+            <span class="sys">{{ g.system }}</span> · {{ g.format }} · {{ g.players }} · {{ g.duration }}{% if g.geo %} · <span class="geo">{{ g.geo }}</span>{% endif %}{% if g.age or site.data.config.ageDefault %} · <span class="age">{{ g.age | default: site.data.config.ageDefault }}</span>{% endif %}
+        </div>
+        <div class="tags">
+            {% if g.setting %}<span class="tag tag-setting">{{ g.setting }}</span>{% endif %}
+            {% if g.veils or g.focus %}<span class="tag tag-warn" title="фокус и вуали — карта контента">CW</span>{% endif %}
+            {% for t in g.tags %}{% unless t == g.setting %}<span class="tag">{{ t }}</span>{% endunless %}{% endfor %}
+        </div>
+    </div>
+</article>
